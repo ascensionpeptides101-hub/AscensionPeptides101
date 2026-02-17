@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Ascension Peptides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A1F44;
+            --accent: #DC143C;
+            --accent-light: #FF6B85;
+            --surface: #F8F9FA;
+            --text: #1A1A1A;
+            --text-muted: #6B7280;
+            --white: #FFFFFF;
+            --blue: #003366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                gap: 0;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                padding: 1rem 0;
+                border-bottom: 1px solid #E5E7EB;
+            }
+
+            .nav-links li:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Main Content */
+        .shop-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10rem 5% 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .disclaimer-box {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 1rem 1.5rem;
+            margin-bottom: 3rem;
+            border-radius: 5px;
+        }
+
+        .disclaimer-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .disclaimer-box p {
+            color: #856404;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent-light);
+        }
+
+        .product-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-card h3 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .price-section {
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-order {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-order:hover {
+            background: #B91030;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--primary);
+            color: white;
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            margin-bottom: 1rem;
+        }
+
+        .contact-section p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            font-size: 1.1rem;
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: var(--accent-light);
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                gap: 0;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                padding: 1rem 0;
+                border-bottom: 1px solid #E5E7EB;
+            }
+
+            .nav-links li:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <svg width="380" height="100" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#003366;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0A1F44;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#DC143C;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#B91030;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Hexagon Shape -->
+                <g transform="translate(50, 45)">
+                    <polygon points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10" 
+                             fill="none" 
+                             stroke="url(#blueGradient)" 
+                             stroke-width="2"/>
+                    <polygon points="0,-13 12,-6.5 12,6.5 0,13 -12,6.5 -12,-6.5" 
+                             fill="none" 
+                             stroke="url(#redGradient)" 
+                             stroke-width="1.5"/>
+                    
+                    <!-- Molecular dots -->
+                    <circle cx="0" cy="-20" r="3" fill="#DC143C"/>
+                    <circle cx="17" cy="-10" r="3" fill="#003366"/>
+                    <circle cx="17" cy="10" r="3" fill="#DC143C"/>
+                    <circle cx="0" cy="20" r="3" fill="#003366"/>
+                    <circle cx="-17" cy="10" r="3" fill="#DC143C"/>
+                    <circle cx="-17" cy="-10" r="3" fill="#003366"/>
+                    
+                    <!-- Center star -->
+                    <path d="M 0,-5 L 1.5,-1.5 L 5,-1.5 L 2,0.5 L 3,4 L 0,1.5 L -3,4 L -2,0.5 L -5,-1.5 L -1.5,-1.5 Z" 
+                          fill="#FFFFFF" 
+                          stroke="#DC143C" 
+                          stroke-width="0.5"/>
+                </g>
+                
+                <!-- Upward arrow -->
+                <g transform="translate(50, 20)">
+                    <path d="M 0,-8 L 5,0 L 2,0 L 2,8 L -2,8 L -2,0 L -5,0 Z" 
+                          fill="url(#redGradient)"/>
+                </g>
+                
+                <!-- Company Name -->
+                <text x="80" y="50" 
+                      font-family="Arial, sans-serif" 
+                      font-size="22" 
+                      font-weight="bold" 
+                      fill="#003366">ASCENSION</text>
+                
+                <text x="80" y="72" 
+                      font-family="Arial, sans-serif" 
+                      font-size="16" 
+                      font-weight="600" 
+                      fill="#DC143C">PEPTIDES</text>
+            </svg>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html" class="active">Shop</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="cart.html">Cart<span class="cart-badge" id="cart-badge">0</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="shop-container">
+        <div class="page-header">
+            <h1>Shop Research Peptides</h1>
+            <p>Premium quality, USA manufactured peptides for research purposes only. All products are third-party lab tested with COA included.</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 1rem 1.5rem; border-radius: 10px; text-align: center; margin-bottom: 1rem; font-weight: 600;">
+            🚚 FREE SHIPPING on orders over $100!
+        </div>
+
+        <div style="background: linear-gradient(135deg, #0A1F44, #003366); color: white; padding: 1rem 1.5rem; border-radius: 10px; text-align: center; margin-bottom: 2rem; font-weight: 600;">
+            🔬 All Products Third-Party Lab Tested • COA Included with Every Order
+        </div>
+
+        <div class="disclaimer-box">
+            <strong>⚠️ IMPORTANT DISCLAIMER</strong>
+            <p>All products are strictly for research purposes only. Not intended for human consumption. Every product is third-party lab tested with Certificate of Analysis (COA) included. By purchasing, you acknowledge that these products are for laboratory and research use only.</p>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <div class="product-icon">🧬</div>
+                <h3>CJC-1295 5mg + Ipamorelin 5mg</h3>
+                <p>High-purity peptide blend for research applications. Third-party lab tested with Certificate of Analysis (COA) included.</p>
+                <div class="price-section">
+                    <div class="price">$49.99</div>
+                    <div class="price-note">Price per vial • COA included</div>
+                </div>
+                <button class="btn-order" onclick="addToCart('CJC-1295 5mg + Ipamorelin 5mg')">Add to Cart</button>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <div class="product-icon">🔬</div>
+                <h3>GHK-CU 100mg</h3>
+                <p>Premium copper peptide for advanced research studies. Third-party lab tested with full documentation and COA included.</p>
+                <div class="price-section">
+                    <div class="price">$45.00</div>
+                    <div class="price-note">Price per vial • COA included</div>
+                </div>
+                <button class="btn-order" onclick="addToCart('GHK-CU 100mg')">Add to Cart</button>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card">
+                <div class="product-icon">⚗️</div>
+                <h3>Retatrutide 10mg</h3>
+                <p>Research-grade peptide with verified purity. Third-party lab tested with comprehensive testing documentation and COA.</p>
+                <div class="price-section">
+                    <div class="price">$75.00</div>
+                    <div class="price-note">Price per vial • COA included</div>
+                </div>
+                <button class="btn-order" onclick="addToCart('Retatrutide 10mg')">Add to Cart</button>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card">
+                <div class="product-icon">💧</div>
+                <h3>BAC Water 10ml</h3>
+                <p>Bacteriostatic water for reconstitution of lyophilized peptides. Sterile and pharmaceutical grade.</p>
+                <div class="price-section">
+                    <div class="price">$6.99</div>
+                    <div class="price-note">Price per vial</div>
+                </div>
+                <button class="btn-order" onclick="addToCart('BAC Water 10ml')">Add to Cart</button>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="product-card">
+                <div class="product-icon">☀️</div>
+                <h3>MT1 10mg</h3>
+                <p>Melanotan 1 research peptide. Third-party lab tested for high purity with complete documentation and COA included.</p>
+                <div class="price-section">
+                    <div class="price">$39.99</div>
+                    <div class="price-note">Price per vial • COA included</div>
+                </div>
+                <button class="btn-order" onclick="addToCart('MT1 10mg')">Add to Cart</button>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2>Questions About Your Order?</h2>
+            <p>Contact us directly for bulk pricing, custom orders, or any questions</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    📧 <a href="mailto:AscensionPeptides101@gmail.com">AscensionPeptides101@gmail.com</a>
+                </div>
+                <div class="contact-item">
+                    📞 <a href="tel:+19205724151">+1 (920) 572-4151</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Ascension Peptides. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">All products are for research use only. Not intended for human consumption.</p>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('nav-links').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

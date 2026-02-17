@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Ascension Peptides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A1F44;
+            --accent: #DC143C;
+            --accent-light: #FF6B85;
+            --surface: #F8F9FA;
+            --text: #1A1A1A;
+            --text-muted: #6B7280;
+            --white: #FFFFFF;
+            --blue: #003366;
+            --success: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .cart-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10rem 5% 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Cart Layout */
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        /* Cart Items */
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart h3 {
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .btn-shop {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-shop:hover {
+            background: #B91030;
+            transform: translateY(-2px);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .item-details h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .item-price {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .qty-display {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .item-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .item-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn-remove {
+            background: #FEE2E2;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .order-summary h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .shipping-free {
+            color: var(--success) !important;
+            font-weight: 700;
+        }
+
+        .shipping-banner {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .total-row {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--primary);
+        }
+
+        .total-row .summary-value {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-checkout:hover {
+            background: #B91030;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .continue-shopping {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .continue-shopping a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .continue-shopping a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        @media (max-width: 968px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+
+            .cart-item {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .item-right {
+                grid-column: 2;
+                flex-direction: row;
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                gap: 0;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                padding: 1rem 0;
+                border-bottom: 1px solid #E5E7EB;
+            }
+
+            .nav-links li:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <svg width="380" height="100" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#003366;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0A1F44;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#DC143C;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#B91030;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <g transform="translate(50, 45)">
+                    <polygon points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10" fill="none" stroke="url(#blueGradient)" stroke-width="2"/>
+                    <polygon points="0,-13 12,-6.5 12,6.5 0,13 -12,6.5 -12,-6.5" fill="none" stroke="url(#redGradient)" stroke-width="1.5"/>
+                    <circle cx="0" cy="-20" r="3" fill="#DC143C"/>
+                    <circle cx="17" cy="-10" r="3" fill="#003366"/>
+                    <circle cx="17" cy="10" r="3" fill="#DC143C"/>
+                    <circle cx="0" cy="20" r="3" fill="#003366"/>
+                    <circle cx="-17" cy="10" r="3" fill="#DC143C"/>
+                    <circle cx="-17" cy="-10" r="3" fill="#003366"/>
+                    <path d="M 0,-5 L 1.5,-1.5 L 5,-1.5 L 2,0.5 L 3,4 L 0,1.5 L -3,4 L -2,0.5 L -5,-1.5 L -1.5,-1.5 Z" fill="#FFFFFF" stroke="#DC143C" stroke-width="0.5"/>
+                </g>
+                <g transform="translate(50, 20)">
+                    <path d="M 0,-8 L 5,0 L 2,0 L 2,8 L -2,8 L -2,0 L -5,0 Z" fill="url(#redGradient)"/>
+                </g>
+                <text x="80" y="50" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#003366">ASCENSION</text>
+                <text x="80" y="72" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#DC143C">PEPTIDES</text>
+            </svg>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="cart.html" class="active">Cart<span class="cart-badge" id="cart-badge">0</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="cart-container">
+        <div class="page-header">
+            <h1>Shopping Cart</h1>
+        </div>
+
+        <div class="cart-layout">
+            <!-- Cart Items -->
+            <div class="cart-items">
+                <div id="cart-items-container">
+                    <!-- Cart items will be inserted here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                
+                <div id="shipping-progress"></div>
+
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal</span>
+                    <span class="summary-value" id="subtotal">$0.00</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Shipping</span>
+                    <span class="summary-value" id="shipping">$10.00</span>
+                </div>
+                
+                <div class="summary-row total-row">
+                    <span class="summary-label" style="font-size: 1.2rem; font-weight: 700; color: var(--primary);">Total</span>
+                    <span class="summary-value" id="total">$0.00</span>
+                </div>
+
+                <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
+                
+                <div class="continue-shopping">
+                    <a href="shop.html">← Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Ascension Peptides. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">All products are for research use only. Not intended for human consumption.</p>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('nav-links').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
